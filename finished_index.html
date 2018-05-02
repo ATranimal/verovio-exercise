@@ -1,0 +1,43 @@
+<html>
+    <head>
+        <title>
+            My Verovio App
+        </title>
+        <script src="http://www.verovio.org/javascript/latest/verovio-toolkit.js"></script>
+        <script src="http://code.jquery.com/jquery-3.2.1.min.js"></script>
+    </head>
+    <body>
+
+        <div id="svg_output" class="biggie"></div>
+
+
+
+        <script type="text/javascript">
+            var verovioToolkit = new verovio.toolkit();
+
+            $.get({
+                url: "chopin.mei",
+                datatype: "text",
+                success: function(data) {
+                    var svg = verovioToolkit.renderData(data, {});
+                    $("#svg_output").html(svg);
+                    colourNote();
+                    colourPitch("c");
+                }
+            });
+
+            function colourNote () {
+                $("#d414233e38").attr("transform", "translate(0, 200)");
+            }
+
+            function colourPitch (pitch) {
+                $(".note").each(function () {
+                    var pitchInfo = verovioToolkit.getElementAttr(this.id);
+                    if (pitchInfo.pname == pitch) {
+                        $("#" + this.id).attr("fill", "#d00");
+                    }
+                })
+            }
+        </script>
+    </body>
+</htmL>

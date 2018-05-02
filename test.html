@@ -1,0 +1,117 @@
+<script src="http://www.verovio.org/javascript/latest/verovio-toolkit.js"></script>
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<div id="output"/>
+<script type="text/javascript">
+    var vrvToolkit = new verovio.toolkit();
+    var highlighted = false;
+    var mei;
+    /* Load the file using HTTP GET */
+    options = {
+        ignoreLayout : 1
+    }
+    vrvToolkit.setOptions(options);
+
+    function loadData(data) {
+        vrvToolkit.loadData(data);
+        page = 1;
+        loadPage();
+    }
+
+    function loadPage () {
+        var svg = vrvToolkit.renderData(1, {});
+        $("#output").html(svg);
+    }
+
+    function highlightTest() {
+        if (!highlighted) {
+            highlighted = true;
+            $(".note" ).attr("fill", "#d00").attr("stroke", "#d00");
+        }
+        else {
+            highlighted = false;
+            $(".note" ).attr("fill", "#000").attr("stroke", "#d00");
+        }
+    }
+
+    var value = "g";
+    var colorValue = "#d00";
+    function moveTest () {
+        switch (value) {
+            case "a":
+                value = "b";
+                colorValue = "#e24";
+                break;
+            case "b":
+                value = "c";
+                colorValue = "#f2e";
+                break;
+            case "c":
+                value = "d";
+                colorValue = "#3e4";
+                break;
+            case "d":
+                value = "e";
+                colorValue = "#522";
+                break;
+            case "e":
+                value = "f";
+                colorValue = "#02f";
+                break;
+            case "f":
+                value = "g";
+                colorValue = "#efc";
+                break;
+            case "g":
+                value = "a";
+                colorValue = "#87d";
+                break;
+            default:
+                colorValue = "#000";
+                value = "g";
+        }
+        editorAction = { action: 'set', param: { elementId: "d414233e62",
+            attrType: "pname", attrValue: value }   
+        };
+        var res = vrvToolkit.edit( editorAction );
+
+
+        $("#d414233e38").attr("fill", colorValue).attr("stroke", colorValue);
+        vrvToolkit.redoLayout();
+        loadPage();
+        
+        
+    }
+        
+    var octToggle = "4";
+    $(window).keyup(function(event){
+        // We need to make sure not to capture event on text fields
+        if ( $(event.target).hasClass('form-control') ) {
+            return;
+        }
+        if ( event.keyCode == 65 ) {
+            highlightTest();
+        }
+        if ( event.keyCode == 66 ) {
+            moveTest();
+        }
+        if ( event.keyCode == 67 ) {
+            octToggle = (octToggle == "4") ? "5" : "4";
+
+            editorAction = { action: 'set', param: { elementId: "d414233e62",
+                attrType: "oct", attrValue: octToggle }   
+            };
+            var res = vrvToolkit.edit( editorAction );
+
+            vrvToolkit.redoLayout();
+            loadPage();
+
+        }
+    });
+
+    $( document ).ready(function() {
+        $.get("chopin.mei", function( data ) {
+            loadData(data);
+            loadPage();
+        }, 'text');
+    });
+</script>
